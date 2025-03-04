@@ -19,9 +19,24 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: [true, "Password is required!"],
-    },
-});
+        required: [true, "Password is required"],
+        validate: {
+          validator: function (password) {
+            return password.length >= 6;
+          },
+          message: `Password must be at least 6 characters long`,
+        },
+      },
+      name: {
+        type: String,
+        validate: {
+          validator: function (value) {
+            return value.length > 3; 
+          },
+          message: "Name must be longer than 3 characters",
+        },
+      },
+},{timestamps:true});
 
 const User = mongoose.model("user", userSchema);
 module.exports = User;

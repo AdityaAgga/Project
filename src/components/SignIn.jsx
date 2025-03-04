@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const SignIn = () => {
   // State for form inputs
@@ -6,10 +7,28 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add form validation and API request here
-    alert("Sign In submitted");
+    
+    try{
+      const userData = {
+        email,
+        password
+      }
+
+      const response = await axios.post("http://localhost:3000/api/v1/auth/login",userData)
+
+      const { token } = response.data; 
+      alert("Sign In successful!");
+      console.log("JWT Token:", token);
+
+      localStorage.setItem("authToken", token);
+
+      window.location.href = "/dashboard"
+    }catch (error) {
+      console.error("Error during sign-in:", error.response?.data || error.message);
+      alert(`Error: ${error.response?.data?.message || "Invalid credentials"}`);
+    }
   };
 
   return (

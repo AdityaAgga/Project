@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from "axios"
 
 const Register = () => {
   // State for form inputs
@@ -9,10 +10,35 @@ const Register = () => {
   const [termsAccepted, setTermsAccepted] = useState(false);
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add form validation and API request here
-    alert('Form submitted');
+    
+    if(password != confirmPassword){
+      alert("Passwords does not match");
+      return;
+    }
+
+    if(!termsAccepted){
+      alert("Please Accept terms and conditions");
+      return;
+    }
+
+    try{
+      const userData = {
+        email,
+        password,
+        name
+      }
+
+      const response = await axios.post("http://localhost:3000/api/v1/auth/signup",userData)
+
+      alert("Registration Successfull")
+
+      window.location.href = "/sign-in"
+    }catch (error) {
+      console.error("Error during registration:", error.response?.data || error.message);
+      alert(`Error: ${error.response?.data?.message || "Something went wrong"}`);
+    }
   };
 
   return (

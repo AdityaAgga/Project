@@ -8,6 +8,7 @@ import SignIn from "./components/SignIn";
 import About from "./components/About";
 import HowItWorksBrief from "./components/HowItWorksBrief";
 import Pricing from "./components/Pricing";
+import Mainpage from "./components/MainPage";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/pricing" element={<Pricing />} /> 
           <Route path="/register" element={<Register />} />
           <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/dashboard" element={<Mainpage />} />
         </Routes>
         <Footer />
       </BrowserRouter>
