@@ -9,6 +9,10 @@ import About from "./components/About";
 import HowItWorksBrief from "./components/HowItWorksBrief";
 import Pricing from "./components/Pricing";
 import Mainpage from "./components/MainPage";
+import ProductManagement from "./components/ProductManagement";
+import OrderTracking from "./components/OrderTracking";
+import InventoryUpdates from "./components/InventoryUpdates";
+import Analytics from "./components/Analytics";
 
 function App() {
   return (
@@ -19,10 +23,14 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/how-it-works" element={<HowItWorksBrief />} />
-          <Route path="/pricing" element={<Pricing />} /> 
+          <Route path="/pricing" element={<Pricing />} />
           <Route path="/register" element={<Register />} />
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/dashboard" element={<Mainpage />} />
+          <Route path="/product-management" element={<ProductManagement />} />
+          <Route path="/order-tracking" element={<OrderTracking />} />
+          <Route path="/inventory-updates" element={<InventoryUpdates />} />
+          <Route path="/analytics" element={<Analytics />} />
         </Routes>
         <Footer />
       </BrowserRouter>
