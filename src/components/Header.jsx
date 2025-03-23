@@ -7,8 +7,8 @@ const Header = () => {
     <header className="bg-gray-800 text-white py-5">
       <nav className="flex justify-between items-center container mx-auto px-4">
         <img
-          src="C:\\Users\\sahaa\\OneDrive\\Desktop\\community\\logo community.jpg"
-          alt="TradeX Logo"
+          src="logo.png"
+          alt="Logo"
           className="h-12"
         />
         <ul className="flex gap-6">

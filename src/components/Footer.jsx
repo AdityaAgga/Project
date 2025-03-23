@@ -8,7 +8,7 @@ const Footer = () => {
         <a href="#contact" className="text-white hover:text-gray-400 mx-4">Contact</a>
         <a href="#privacy-policy" className="text-white hover:text-gray-400 mx-4">Privacy Policy</a>
       </div>
-      <p>© 2025 TradeX - All Rights Reserved</p>
+      <p>© 2025 CRES - All Rights Reserved</p>
     </footer>
   );
 };

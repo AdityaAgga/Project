@@ -13,7 +13,7 @@ const MainPage = () => {
           <button style={styles.heroButton}>Get Started</button>
         </div>
         <img
-          src="https://via.placeholder.com/600x400"
+          src="/wholesaler.png"
           alt="Wholesaler Dashboard Image"
           style={styles.heroImage}
         />
@@ -25,7 +25,7 @@ const MainPage = () => {
           <Link to="/product-management" style={styles.link}>
             <div className="card" style={styles.card}>
               <img
-                src="https://via.placeholder.com/100"
+                src="/pd_management.jpeg"
                 alt="Product Management Icon"
                 style={styles.cardImage}
               />
@@ -39,7 +39,7 @@ const MainPage = () => {
           <Link to="/order-tracking" style={styles.link}>
             <div className="card" style={styles.card}>
               <img
-                src="https://via.placeholder.com/100"
+                src="/order_track.jpg"
                 alt="Order Tracking Icon"
                 style={styles.cardImage}
               />
@@ -53,7 +53,7 @@ const MainPage = () => {
           <Link to="/inventory-updates" style={styles.link}>
             <div className="card" style={styles.card}>
               <img
-                src="https://via.placeholder.com/100"
+                src="/Inventory.jpg"
                 alt="Inventory Updates Icon"
                 style={styles.cardImage}
               />
@@ -67,7 +67,7 @@ const MainPage = () => {
           <Link to="/analytics" style={styles.link}>
             <div className="card" style={styles.card}>
               <img
-                src="https://via.placeholder.com/100"
+                src="/analytics.jpg"
                 alt="Analytics Icon"
                 style={styles.cardImage}
               />
@@ -85,7 +85,7 @@ const MainPage = () => {
         <div className="product-list" style={styles.productList}>
           <div className="product-card" style={styles.productCard}>
             <img
-              src="https://via.placeholder.com/150"
+              src="/pd_1.jpg"
               alt="Product 1"
               style={styles.productImage}
             />
@@ -94,7 +94,7 @@ const MainPage = () => {
           </div>
           <div className="product-card" style={styles.productCard}>
             <img
-              src="https://via.placeholder.com/150"
+              src="/pd_2.jpg"
               alt="Product 2"
               style={styles.productImage}
             />
@@ -103,7 +103,7 @@ const MainPage = () => {
           </div>
           <div className="product-card" style={styles.productCard}>
             <img
-              src="https://via.placeholder.com/150"
+              src="/pd_3.jpg"
               alt="Product 3"
               style={styles.productImage}
             />
@@ -150,7 +150,7 @@ const styles = {
     fontSize: "1rem",
   },
   heroImage: {
-    width: "50%",
+    width: "10%",
     height: "auto",
     borderRadius: "10px",
   },
@@ -175,21 +175,24 @@ const styles = {
     display: "block", 
   },
   card: {
-    flex: "1 1 200px", 
-    maxWidth: "22%", 
+    flex: "1 1 300px", 
+    maxWidth: "300px", 
     padding: "15px",
     backgroundColor: "#f4f4f4",
     borderRadius: "10px",
     textAlign: "center",
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-    transition: "transform 0.3s ease", 
-  },
-  cardHover: {
-    transform: "scale(1.05)", 
+    transition: "transform 0.3s ease",
+    width: "300px", 
+    height: "300px", 
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
   },
   cardImage: {
-    width: "100px",
-    height: "100px",
+    width: "225px",
+    height: "150px",
     marginBottom: "10px",
   },
   cardTitle: {
@@ -197,10 +200,13 @@ const styles = {
     fontWeight: "bold",
     marginBottom: "5px",
   },
+
   cardDescription: {
     fontSize: "0.9rem",
     color: "#555",
+    textAlign: "center", 
   },
+
   featuredProducts: {
     padding: "20px",
     backgroundColor: "#f9f9f9",
@@ -218,10 +224,14 @@ const styles = {
     borderRadius: "10px",
     textAlign: "center",
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    display:"flex",
+    flexDirection: "column", 
+    justifyContent: "center", 
+    alignItems: "center",
   },
   productImage: {
-    width: "150px",
-    height: "150px",
+    width: "300px",
+    height: "200px",
     marginBottom: "10px",
   },
   productTitle: {

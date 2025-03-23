@@ -2,9 +2,9 @@ import React, { useState } from "react";
 
 const ProductManagement = () => {
   const [products, setProducts] = useState([
-    { id: 1, image: "https://via.placeholder.com/100", name: "Product 1", price: "$50" },
-    { id: 2, image: "https://via.placeholder.com/100", name: "Product 2", price: "$75" },
-    { id: 3, image: "https://via.placeholder.com/100", name: "Product 3", price: "$100" },
+    { id: 1, image: "/pd_1.jpg", name: "Product 1", price: "$50" },
+    { id: 2, image: "/pd_2.jpg", name: "Product 2", price: "$75" },
+    { id: 3, image: "/pd_3.jpg", name: "Product 3", price: "$100" },
   ]);
 
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
@@ -99,7 +99,7 @@ const ProductManagement = () => {
 
       {/* Product List */}
       <div style={styles.productList}>
-        <h3>Product List</h3>
+        {/* <h3>Product List</h3> */}
         <div style={styles.productGrid}>
           {products.map((product) => (
             <div key={product.id} style={styles.productCard}>
@@ -202,19 +202,23 @@ const styles = {
     gap: "20px",
   },
   productCard: {
-    flex: "1 1 calc(25% - 20px)", 
+    flex: "1 1 calc(25% - 20px)",
     padding: "15px",
-    backgroundColor: "#f4f4f4",
+    backgroundColor: "#fff",
     borderRadius: "10px",
     textAlign: "center",
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
     transition: "transform 0.3s ease",
+    display: "flex", 
+    flexDirection: "column", 
+    alignItems: "center", 
   },
   productImage: {
     width: "100px",
     height: "100px",
     marginBottom: "10px",
     borderRadius: "5px",
+    objectFit: "cover", 
   },
   productName: {
     fontSize: "1.2rem",
@@ -228,8 +232,7 @@ const styles = {
   },
   productActions: {
     display: "flex",
-    justifyContent: "center",
-    gap: "10px",
+    gap: "10px", 
   },
   actionButton: {
     padding: "5px 10px",
