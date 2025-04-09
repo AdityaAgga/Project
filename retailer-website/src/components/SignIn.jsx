@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { Link } from 'react-router-dom';
+import { login } from '../services/authService';
+import './SignIn.css';
 
 const SignIn = () => {
-  // State for form inputs
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,28 +19,18 @@ const SignIn = () => {
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    try{
-      const userData = {
-        email: formData.email,
-        password: formData.password
-      }
+    setError('');
+    setLoading(true);
 
-      const response = await axios.post("http://localhost:3000/api/v1/auth/login",userData)
-
-      const { token } = response.data; 
-      alert("Sign In successful!");
-      console.log("JWT Token:", token);
-
-      localStorage.setItem("authToken", token);
-
-      window.location.href = "/dashboard"
-    }catch (error) {
-      console.error("Error during sign-in:", error.response?.data || error.message);
-      alert(`Error: ${error.response?.data?.message || "Invalid credentials"}`);
+    try {
+      await login(formData.email, formData.password);
+      window.location.href = '/retailer/dashboard';
+    } catch (err) {
+      setError(err.message || 'Failed to sign in. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,7 +39,9 @@ const SignIn = () => {
       <div className="signin-form">
         <h2>Welcome Back</h2>
         <p className="form-subtitle">Sign in to your retailer account to continue</p>
-        
+
+        {error && <div className="error-message">{error}</div>}
+
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">Email Address</label>
@@ -83,7 +77,9 @@ const SignIn = () => {
             </Link>
           </div>
 
-          <button type="submit" className="submit-btn">Sign In</button>
+          <button type="submit" className="submit-btn" disabled={loading}>
+            {loading ? 'Signing in...' : 'Sign In'}
+          </button>
         </form>
 
         <p className="register-link">

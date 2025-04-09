@@ -1,31 +1,76 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { register } from '../services/authService';
+import './Register.css';
 
 const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    businessName: '',
+    name: '',
     email: '',
-    phone: '',
     password: '',
     confirmPassword: '',
-    address: '',
-    city: '',
-    state: '',
-    pincode: ''
+    storeName: '',
+    address: {
+      street: '',
+      city: '',
+      state: '',
+      zipCode: '',
+      country: ''
+    },
+    phoneNumber: ''
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+    if (name.startsWith('address.')) {
+      const field = name.split('.')[1];
+      setFormData(prev => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          [field]: value
+        }
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log(formData);
+    setError('');
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    setLoading(true);
+
+    const dataToSend = {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      storeName: formData.storeName,
+      address: formData.address,
+      phoneNumber: formData.phoneNumber,
+    };
+
+    try {
+      await register(dataToSend);
+      alert('Registration successful! Please login with your credentials.');
+      navigate('/sign-in');
+    } catch (err) {
+      setError(err.message || 'Failed to register. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -33,15 +78,29 @@ const Register = () => {
       <div className="register-form">
         <h2>Create Your Retailer Account</h2>
         <p className="form-subtitle">Join our platform to connect with wholesalers and manage your bulk purchases.</p>
-        
+
+        {error && <div className="error-message">{error}</div>}
+
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="businessName">Business Name</label>
+            <label htmlFor="name">Full Name</label>
             <input
               type="text"
-              id="businessName"
-              name="businessName"
-              value={formData.businessName}
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="storeName">Store Name</label>
+            <input
+              type="text"
+              id="storeName"
+              name="storeName"
+              value={formData.storeName}
               onChange={handleChange}
               required
             />
@@ -60,14 +119,15 @@ const Register = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="phone">Phone Number</label>
+            <label htmlFor="phoneNumber">Phone Number</label>
             <input
               type="tel"
-              id="phone"
-              name="phone"
-              value={formData.phone}
+              id="phoneNumber"
+              name="phoneNumber"
+              value={formData.phoneNumber}
               onChange={handleChange}
               required
+              pattern="[0-9]{10}"
             />
           </div>
 
@@ -80,6 +140,7 @@ const Register = () => {
               value={formData.password}
               onChange={handleChange}
               required
+              minLength="8"
             />
           </div>
 
@@ -92,15 +153,17 @@ const Register = () => {
               value={formData.confirmPassword}
               onChange={handleChange}
               required
+              minLength="8"
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="address">Business Address</label>
-            <textarea
-              id="address"
-              name="address"
-              value={formData.address}
+            <label htmlFor="street">Street Address</label>
+            <input
+              type="text"
+              id="street"
+              name="address.street"
+              value={formData.address.street}
               onChange={handleChange}
               required
             />
@@ -112,8 +175,8 @@ const Register = () => {
               <input
                 type="text"
                 id="city"
-                name="city"
-                value={formData.city}
+                name="address.city"
+                value={formData.address.city}
                 onChange={handleChange}
                 required
               />
@@ -124,34 +187,41 @@ const Register = () => {
               <input
                 type="text"
                 id="state"
-                name="state"
-                value={formData.state}
+                name="address.state"
+                value={formData.address.state}
                 onChange={handleChange}
                 required
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="pincode">Pincode</label>
+              <label htmlFor="zipCode">ZIP Code</label>
               <input
                 type="text"
-                id="pincode"
-                name="pincode"
-                value={formData.pincode}
+                id="zipCode"
+                name="address.zipCode"
+                value={formData.address.zipCode}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="country">Country</label>
+              <input
+                type="text"
+                id="country"
+                name="address.country"
+                value={formData.address.country}
                 onChange={handleChange}
                 required
               />
             </div>
           </div>
 
-          <div className="form-group checkbox">
-            <input type="checkbox" id="terms" required />
-            <label htmlFor="terms">
-              I agree to the <Link to="/terms">Terms of Service</Link> and <Link to="/privacy-policy">Privacy Policy</Link>
-            </label>
-          </div>
-
-          <button type="submit" className="submit-btn">Create Account</button>
+          <button type="submit" className="submit-btn" disabled={loading}>
+            {loading ? 'Creating Account...' : 'Create Account'}
+          </button>
         </form>
 
         <p className="login-link">

@@ -1,6 +1,6 @@
 import React from "react";
 import Home from "./pages/Home";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Register from "./components/Register";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -16,33 +16,40 @@ import Analytics from "./components/Analytics";
 import RetailerDashboard from "./pages/retailer/RetailerDashboard";
 import ProductCatalog from "./pages/retailer/ProductCatalog";
 import Messages from "./pages/retailer/Messages";
+import ProtectedRoute from "./components/ProtectedRoute";
+import './App.css';
 
 function App() {
   return (
-    <>
-      <BrowserRouter>
+    <BrowserRouter>
+      <div className="app">
         <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/how-it-works" element={<HowItWorks />} />
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/dashboard" element={<Mainpage />} />
-          <Route path="/product-management" element={<ProductManagement />} />
-          <Route path="/order-tracking" element={<OrderTracking />} />
-          <Route path="/inventory-updates" element={<InventoryUpdates />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/retailer/dashboard" element={<RetailerDashboard />} />
-          <Route path="/retailer/products" element={<ProductCatalog />} />
-          <Route path="/retailer/messages" element={<Messages />} />
-          <Route path="/retailer/sign-in" element={<SignIn />} />
-          <Route path="/retailer/register" element={<Register />} />
-        </Routes>
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/how-it-works" element={<HowItWorks />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/sign-in" element={<SignIn />} />
+            <Route path="/dashboard" element={<Mainpage />} />
+            <Route path="/product-management" element={<ProductManagement />} />
+            <Route path="/order-tracking" element={<OrderTracking />} />
+            <Route path="/inventory-updates" element={<InventoryUpdates />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/retailer/dashboard" element={<RetailerDashboard />} />
+              <Route path="/retailer/products" element={<ProductCatalog />} />
+              <Route path="/retailer/messages" element={<Messages />} />
+            </Route>
+            <Route path="/retailer/sign-in" element={<SignIn />} />
+            <Route path="/retailer/register" element={<Register />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
         <Footer />
-      </BrowserRouter>
-    </>
+      </div>
+    </BrowserRouter>
   );
 }
 

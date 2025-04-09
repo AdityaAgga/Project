@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import './Dashboard.css'; // Import the CSS file
 
 const RetailerDashboard = () => {
   const stats = [
@@ -79,113 +80,103 @@ const RetailerDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
-          <div className="flex gap-4">
-            <Link
-              to="/retailer/products"
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
-            >
-              Browse Products
-            </Link>
-            <Link
-              to="/retailer/messages"
-              className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition"
-            >
-              Messages
+    <div className="dashboard-container">
+      <div className="dashboard-header">
+        <h1 className="dashboard-title">Dashboard</h1>
+        <div className="dashboard-actions">
+          <Link
+            to="/retailer/products"
+            className="action-button primary"
+          >
+            Browse Products
+          </Link>
+          <Link
+            to="/retailer/messages"
+            className="action-button secondary"
+          >
+            Messages
+          </Link>
+        </div>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="dashboard-stats">
+        {stats.map((stat, index) => (
+          <div key={index} className="stat-card">
+            <span className="stat-icon">{stat.icon}</span>
+            <p className="stat-title">{stat.title}</p>
+            <p className="stat-value">{stat.value}</p>
+            <div className={`stat-change ${stat.trend === 'up' ? 'positive' : 'negative'}`}>
+              {stat.change} from last month
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="dashboard-content">
+        {/* Recent Orders */}
+        <div className="dashboard-card">
+          <div className="card-header">
+            <h2 className="card-title">Recent Orders</h2>
+            <Link to="/order-tracking" className="view-all">
+              View All
             </Link>
           </div>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-sm text-gray-600">{stat.title}</p>
-                  <p className="text-2xl font-bold text-gray-800 mt-1">{stat.value}</p>
-                </div>
-                <span className="text-2xl">{stat.icon}</span>
-              </div>
-              <div className={`mt-4 text-sm ${
-                stat.trend === 'up' ? 'text-green-600' : 'text-red-600'
-              }`}>
-                {stat.change} from last month
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Recent Orders */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-gray-800">Recent Orders</h2>
-              <Link to="/order-tracking" className="text-blue-600 hover:text-blue-700">
-                View All
-              </Link>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="min-w-full">
-                <thead>
-                  <tr className="bg-gray-50">
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order ID</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Wholesaler</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+          <div className="table-container">
+            <table className="recent-orders">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Date</th>
+                  <th>Wholesaler</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentOrders.map((order, index) => (
+                  <tr key={index}>
+                    <td>{order.id}</td>
+                    <td>{order.date}</td>
+                    <td>{order.wholesaler}</td>
+                    <td>{order.amount}</td>
+                    <td>
+                      <span className={`status-badge status-${order.status.toLowerCase()}`}>
+                        {order.status}
+                      </span>
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {recentOrders.map((order, index) => (
-                    <tr key={index}>
-                      <td className="px-4 py-3 text-sm text-gray-900">{order.id}</td>
-                      <td className="px-4 py-3 text-sm text-gray-500">{order.date}</td>
-                      <td className="px-4 py-3 text-sm text-gray-900">{order.wholesaler}</td>
-                      <td className="px-4 py-3 text-sm text-gray-900">{order.amount}</td>
-                      <td className="px-4 py-3">
-                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                          order.status === 'Delivered' ? 'bg-green-100 text-green-800' :
-                          order.status === 'Processing' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-blue-100 text-blue-800'
-                        }`}>
-                          {order.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
+        </div>
 
-          {/* Recent Messages */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-gray-800">Recent Messages</h2>
-              <Link to="/retailer/messages" className="text-blue-600 hover:text-blue-700">
-                View All
-              </Link>
-            </div>
-            <div className="space-y-4">
-              {recentMessages.map((message, index) => (
-                <div key={index} className="border-b border-gray-200 pb-4 last:border-0">
-                  <div className="flex justify-between items-start">
-                    <h3 className="font-semibold text-gray-800">{message.sender}</h3>
-                    <span className="text-sm text-gray-500">{message.time}</span>
-                  </div>
-                  <p className="text-sm text-gray-600 mt-1">{message.content}</p>
+        {/* Recent Messages */}
+        <div className="dashboard-card">
+          <div className="card-header">
+            <h2 className="card-title">Recent Messages</h2>
+            <Link to="/retailer/messages" className="view-all">
+              View All
+            </Link>
+          </div>
+          <div className="message-list">
+            {recentMessages.map((message, index) => (
+              <div key={index} className="message-item">
+                <div className="message-header">
+                  <h3 className="message-sender">{message.sender}</h3>
+                  <span className="message-time">{message.time}</span>
+                </div>
+                <div className="message-content">
+                  <p>{message.content}</p>
                   {message.unread && (
-                    <span className="inline-block bg-blue-600 text-white text-xs px-2 py-1 rounded-full mt-2">
+                    <span className="new-badge">
                       New
                     </span>
                   )}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
