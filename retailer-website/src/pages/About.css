@@ -1,139 +1,158 @@
 .about-container {
-  margin-top: 4rem;
-  padding: 2rem;
+  min-height: 100vh;
+  background-color: #f9fafb;
+  font-family: Arial, sans-serif;
 }
 
-.about-hero {
-  text-align: center;
-  margin-bottom: 4rem;
+/* Hero Section */
+.hero-section {
+  background-color: #1f2937;
+  color: white;
+  padding: 5rem 0;
 }
 
-.about-title {
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.hero-title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.about-subtitle {
+.hero-subtitle {
   font-size: 1.25rem;
-  color: #6b7280;
-  max-width: 600px;
+  max-width: 48rem;
+}
+
+/* Mission Section */
+.mission-section {
+  padding: 4rem 0;
+}
+
+.mission-content {
+  max-width: 48rem;
   margin: 0 auto;
+  text-align: center;
+}
+
+.section-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+}
+
+.section-text {
+  font-size: 1.125rem;
+  color: #4b5563;
+  margin-bottom: 2rem;
+  line-height: 1.6;
 }
 
 /* Features Section */
-.features {
+.features-section {
+  padding: 4rem 0;
+  background-color: white;
+}
+
+.features-grid {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 2rem;
-  margin-bottom: 4rem;
-}
-
-@media (min-width: 768px) {
-  .features {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .features {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  margin-top: 3rem;
 }
 
 .feature-card {
-  background-color: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: #f9fafb;
   padding: 2rem;
-  text-align: center;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.feature-icon {
-  width: 3rem;
-  height: 3rem;
-  margin: 0 auto 1rem;
-  color: #2563eb;
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
 .feature-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1f2937;
   margin-bottom: 1rem;
+  color: #1f2937;
 }
 
-.feature-description {
-  font-size: 1rem;
-  color: #6b7280;
+.feature-text {
+  color: #4b5563;
+  line-height: 1.5;
 }
 
 /* Team Section */
-.team {
-  margin-bottom: 4rem;
-}
-
-.team-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1f2937;
-  text-align: center;
-  margin-bottom: 3rem;
+.team-section {
+  padding: 4rem 0;
 }
 
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 2rem;
-}
-
-@media (min-width: 640px) {
-  .team-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .team-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  margin-top: 3rem;
 }
 
 .team-member {
-  background-color: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
   text-align: center;
 }
 
-.member-image {
-  width: 100%;
-  height: 300px;
-  object-fit: cover;
+.team-avatar {
+  width: 8rem;
+  height: 8rem;
+  background-color: #e5e7eb;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
 }
 
-.member-info {
-  padding: 1.5rem;
-}
-
-.member-name {
+.team-name {
   font-size: 1.25rem;
   font-weight: 600;
   color: #1f2937;
   margin-bottom: 0.5rem;
 }
 
-.member-role {
-  font-size: 1rem;
-  color: #6b7280;
-  margin-bottom: 1rem;
+.team-title {
+  color: #4b5563;
 }
 
-.member-bio {
-  font-size: 0.875rem;
-  color: #6b7280;
+/* CTA Section */
+.cta-section {
+  padding: 4rem 0;
+  background-color: #1f2937;
+  color: white;
+  text-align: center;
+}
+
+.cta-content {
+  max-width: 36rem;
+  margin: 0 auto;
+}
+
+.cta-button {
+  display: inline-block;
+  background-color: white;
+  color: #1f2937;
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s;
+  margin-top: 2rem;
+}
+
+.cta-button:hover {
+  background-color: #f3f4f6;
 }
 
 /* Stats Section */

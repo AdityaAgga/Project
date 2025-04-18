@@ -5,6 +5,7 @@ import Register from "./components/Register";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import SignIn from "./components/SignIn";
+import UnifiedSignUp from "./components/UnifiedSignUp";
 import About from "./pages/About";
 import HowItWorks from "./pages/HowItWorks";
 import Pricing from "./components/Pricing";
@@ -30,7 +31,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
             <Route path="/pricing" element={<Pricing />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/register" element={<UnifiedSignUp />} />
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/dashboard" element={<Mainpage />} />
             <Route path="/product-management" element={<ProductManagement />} />
@@ -43,7 +44,7 @@ function App() {
               <Route path="/retailer/messages" element={<Messages />} />
             </Route>
             <Route path="/retailer/sign-in" element={<SignIn />} />
-            <Route path="/retailer/register" element={<Register />} />
+            <Route path="/retailer/register" element={<UnifiedSignUp />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

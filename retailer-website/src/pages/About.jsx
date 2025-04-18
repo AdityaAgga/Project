@@ -1,25 +1,26 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import './About.css';
 
 const About = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="about-container">
       {/* Hero Section */}
-      <section className="bg-primary-600 text-white py-20">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">About CRES</h1>
-          <p className="text-xl md:text-2xl max-w-3xl">
+      <section className="hero-section">
+        <div className="container">
+          <h1 className="hero-title">About CRES</h1>
+          <p className="hero-subtitle">
             Connecting retailers with wholesalers for seamless bulk purchasing experiences
           </p>
         </div>
       </section>
 
       {/* Mission Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-6">Our Mission</h2>
-            <p className="text-lg text-gray-600 mb-8">
+      <section className="mission-section">
+        <div className="container">
+          <div className="mission-content">
+            <h2 className="section-title">Our Mission</h2>
+            <p className="section-text">
               At CRES, we're dedicated to revolutionizing the way retailers source their products. 
               Our platform bridges the gap between retailers and wholesalers, making bulk purchasing 
               more efficient, transparent, and profitable for everyone involved.
@@ -29,25 +30,25 @@ const About = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Why Choose CRES</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-gray-50 p-8 rounded-lg shadow-custom">
-              <h3 className="text-xl font-semibold mb-4">Seamless Integration</h3>
-              <p className="text-gray-600">
+      <section className="features-section">
+        <div className="container">
+          <h2 className="section-title" style={{ textAlign: 'center' }}>Why Choose CRES</h2>
+          <div className="features-grid">
+            <div className="feature-card">
+              <h3 className="feature-title">Seamless Integration</h3>
+              <p className="feature-text">
                 Connect with verified wholesalers and manage your inventory in one place
               </p>
             </div>
-            <div className="bg-gray-50 p-8 rounded-lg shadow-custom">
-              <h3 className="text-xl font-semibold mb-4">Competitive Pricing</h3>
-              <p className="text-gray-600">
+            <div className="feature-card">
+              <h3 className="feature-title">Competitive Pricing</h3>
+              <p className="feature-text">
                 Access wholesale prices and bulk discounts to maximize your profits
               </p>
             </div>
-            <div className="bg-gray-50 p-8 rounded-lg shadow-custom">
-              <h3 className="text-xl font-semibold mb-4">Secure Transactions</h3>
-              <p className="text-gray-600">
+            <div className="feature-card">
+              <h3 className="feature-title">Secure Transactions</h3>
+              <p className="feature-text">
                 Safe and reliable payment processing with built-in fraud protection
               </p>
             </div>
@@ -56,47 +57,46 @@ const About = () => {
       </section>
 
       {/* Team Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Our Team</h2>
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="w-32 h-32 bg-gray-200 rounded-full mx-auto mb-4"></div>
-              <h3 className="text-xl font-semibold">John Doe</h3>
-              <p className="text-gray-600">CEO & Founder</p>
+      <section className="team-section">
+        <div className="container">
+          <h2 className="section-title" style={{ textAlign: 'center' }}>Our Team</h2>
+          <div className="team-grid">
+            <div className="team-member">
+              <div className="team-avatar"></div>
+              <h3 className="team-name">John Doe</h3>
+              <p className="team-title">CEO & Founder</p>
             </div>
-            <div className="text-center">
-              <div className="w-32 h-32 bg-gray-200 rounded-full mx-auto mb-4"></div>
-              <h3 className="text-xl font-semibold">Jane Smith</h3>
-              <p className="text-gray-600">CTO</p>
+            <div className="team-member">
+              <div className="team-avatar"></div>
+              <h3 className="team-name">Jane Smith</h3>
+              <p className="team-title">CTO</p>
             </div>
-            <div className="text-center">
-              <div className="w-32 h-32 bg-gray-200 rounded-full mx-auto mb-4"></div>
-              <h3 className="text-xl font-semibold">Mike Johnson</h3>
-              <p className="text-gray-600">Head of Operations</p>
+            <div className="team-member">
+              <div className="team-avatar"></div>
+              <h3 className="team-name">Mike Johnson</h3>
+              <p className="team-title">Head of Operations</p>
             </div>
-            <div className="text-center">
-              <div className="w-32 h-32 bg-gray-200 rounded-full mx-auto mb-4"></div>
-              <h3 className="text-xl font-semibold">Sarah Williams</h3>
-              <p className="text-gray-600">Marketing Director</p>
+            <div className="team-member">
+              <div className="team-avatar"></div>
+              <h3 className="team-name">Sarah Williams</h3>
+              <p className="team-title">Marketing Director</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-primary-600 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-6">Ready to Get Started?</h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Join CRES today and transform your retail business with our innovative platform
-          </p>
-          <Link 
-            to="/register" 
-            className="bg-white text-primary-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
-          >
-            Create Your Account
-          </Link>
+      <section className="cta-section">
+        <div className="container">
+          <div className="cta-content">
+            <h2 className="section-title" style={{ color: 'white' }}>Ready to Get Started?</h2>
+            <p className="section-text" style={{ color: 'white' }}>
+              Join CRES today and transform your retail business with our innovative platform
+            </p>
+            <Link to="/register" className="cta-button">
+              Create Your Account
+            </Link>
+          </div>
         </div>
       </section>
     </div>

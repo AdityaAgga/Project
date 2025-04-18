@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import './HowItWorks.css';
 
 const HowItWorks = () => {
   const steps = [
@@ -59,56 +60,44 @@ const HowItWorks = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="how-it-works-container">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-primary-600 to-primary-800 text-white py-20">
-        <div className="absolute inset-0 bg-black opacity-20"></div>
-        <div className="container mx-auto px-4 relative">
-          <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">How CRES Works</h1>
-            <p className="text-xl md:text-2xl">
-              A simple, step-by-step guide to using our platform
-            </p>
-          </div>
+      <section className="hero-section">
+        <div className="container">
+          <h1 className="page-title">How CRES Works</h1>
+          <p className="page-subtitle">
+            A simple, step-by-step guide to using our platform
+          </p>
         </div>
       </section>
 
       {/* Steps Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {steps.map((step, index) => (
-              <div key={index} className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center text-2xl mr-4">
-                    {step.icon}
-                  </div>
-                  <div className="w-8 h-8 bg-primary-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">
-                    {index + 1}
-                  </div>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-3">{step.title}</h3>
-                <p className="text-gray-600">{step.description}</p>
-              </div>
-            ))}
+      <section className="container steps-container">
+        {steps.map((step, index) => (
+          <div key={index} className="step">
+            <div className="step-number-container">
+              <div className="step-icon">{step.icon}</div>
+              <div className="step-number">{index + 1}</div>
+            </div>
+            <div className="step-content">
+              <h3 className="step-title">{step.title}</h3>
+              <p className="step-description">{step.description}</p>
+            </div>
           </div>
-        </div>
+        ))}
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">Key Features</h2>
-          <div className="grid md:grid-cols-2 gap-8">
+      <section className="features-section">
+        <div className="container">
+          <h2 className="section-title">Key Features</h2>
+          <div className="features-grid">
             {features.map((feature, index) => (
-              <div key={index} className="flex items-start">
-                <div className="bg-primary-100 p-3 rounded-lg mr-4">
-                  <span className="text-2xl">{feature.icon}</span>
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
-                </div>
+              <div key={index} className="feature-card">
+                <h3 className="feature-title">
+                  <span className="feature-icon">{feature.icon}</span> {feature.title}
+                </h3>
+                <p className="feature-description">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -116,18 +105,17 @@ const HowItWorks = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-primary-600 to-primary-800 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-6">Ready to Get Started?</h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Join CRES today and transform your retail business with our innovative platform
-          </p>
-          <Link 
-            to="/register" 
-            className="inline-block bg-white text-primary-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
-          >
-            Create Your Account
-          </Link>
+      <section className="cta-section">
+        <div className="container">
+          <div className="cta-content">
+            <h2 className="section-title" style={{ color: 'white' }}>Ready to Get Started?</h2>
+            <p className="section-text" style={{ color: 'white' }}>
+              Join CRES today and transform your retail business with our innovative platform
+            </p>
+            <Link to="/register" className="cta-button">
+              Create Your Account
+            </Link>
+          </div>
         </div>
       </section>
     </div>
