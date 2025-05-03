@@ -1,118 +1,149 @@
 import React from 'react';
+import { Box, Typography, Paper, Button, Grid, Stack, useTheme } from '@mui/material';
 
 const HowItWorksBrief = () => {
+  const theme = useTheme();
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 px-4">
+    <Box sx={{
+      bgcolor: theme.palette.mode === 'dark' ? 'grey.900' : 'grey.100',
+      py: { xs: 6, md: 10 },
+      px: 2,
+    }}>
       {/* Header Section */}
-      <div className="max-w-4xl mx-auto text-center mb-16">
-        <h1 className="text-4xl font-bold text-gray-900 mb-6">
+      <Box maxWidth={800} mx="auto" textAlign="center" mb={8}>
+        <Typography variant="h4" fontWeight="bold" color="primary" gutterBottom>
           How It Works
-        </h1>
-        <p className="text-xl text-gray-600">
+        </Typography>
+        <Typography variant="h6" color="text.secondary">
           Start sharing and connecting with your community in just a few simple steps
-        </p>
-      </div>
+        </Typography>
+      </Box>
 
       {/* Process Steps */}
-      <div className="max-w-5xl mx-auto mb-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+      <Box maxWidth={1000} mx="auto" mb={10}>
+        <Grid container spacing={4} justifyContent="center" alignItems="stretch">
           {steps.map((step, index) => (
-            <div key={index} className="relative">
-              <div className="bg-white rounded-xl shadow-lg p-6 h-full transform hover:scale-[1.02] transition-transform">
-                <div className="absolute -top-4 -left-4 bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold z-10">
-                  {index + 1}
-                </div>
-                <div className="flex flex-col items-center text-center">
-                  <div className="mb-4 bg-blue-50 p-4 rounded-full text-4xl">
+            <Grid item xs={12} md={4} key={index}>
+              <Paper elevation={6} sx={{ p: 4, height: '100%', borderRadius: 3, position: 'relative' }}>
+                <Box sx={{
+                  position: 'absolute',
+                  top: -24,
+                  left: 24,
+                  bgcolor: 'primary.main',
+                  color: 'common.white',
+                  width: 40,
+                  height: 40,
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 'bold',
+                  fontSize: 20,
+                  boxShadow: 2,
+                  zIndex: 1,
+                }}>{index + 1}</Box>
+                <Stack alignItems="center" spacing={2} mt={2}>
+                  <Box sx={{ fontSize: 40, bgcolor: 'primary.light', color: 'primary.dark', p: 2, borderRadius: '50%' }}>
                     {step.icon}
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  </Box>
+                  <Typography variant="h6" fontWeight="bold" color="text.primary">
                     {step.title}
-                  </h3>
-                  <p className="text-gray-600">
+                  </Typography>
+                  <Typography color="text.secondary">
                     {step.description}
-                  </p>
-                </div>
-              </div>
-              {index < 2 && (
-                <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2 text-2xl">
-                  ➡️
-                </div>
-              )}
-            </div>
+                  </Typography>
+                </Stack>
+              </Paper>
+            </Grid>
           ))}
-        </div>
-      </div>
+        </Grid>
+      </Box>
 
       {/* Guidelines Section */}
-      <div className="max-w-4xl mx-auto mb-16 bg-white rounded-xl shadow-lg p-8">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6 text-center">
-          Community Guidelines
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {guidelines.map((guideline, index) => (
-            <div key={index} className="flex items-start space-x-4 bg-gray-50 p-4 rounded-lg">
-              <div className="text-3xl">🛡️</div>
-              <div>
-                <h3 className="font-medium text-gray-900 mb-1">{guideline.title}</h3>
-                <p className="text-gray-600">{guideline.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <Box maxWidth={900} mx="auto" mb={10}>
+        <Paper elevation={3} sx={{ p: { xs: 3, md: 6 }, borderRadius: 3 }}>
+          <Typography variant="h5" fontWeight="bold" color="primary" textAlign="center" mb={4}>
+            Community Guidelines
+          </Typography>
+          <Grid container spacing={3}>
+            {guidelines.map((guideline, index) => (
+              <Grid item xs={12} md={6} key={index}>
+                <Box display="flex" alignItems="flex-start" gap={2} bgcolor="grey.100" p={2} borderRadius={2}>
+                  <Box fontSize={32}>🛡️</Box>
+                  <Box>
+                    <Typography fontWeight="medium" color="text.primary">
+                      {guideline.title}
+                    </Typography>
+                    <Typography color="text.secondary">{guideline.description}</Typography>
+                  </Box>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        </Paper>
+      </Box>
 
       {/* Success Stories */}
-      <div className="max-w-4xl mx-auto mb-16">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-8 text-center">
+      <Box maxWidth={900} mx="auto" mb={10}>
+        <Typography variant="h5" fontWeight="bold" color="primary" textAlign="center" mb={4}>
           Success Stories
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        </Typography>
+        <Grid container spacing={4}>
           {stories.map((story, index) => (
-            <div key={index} className="bg-white rounded-xl shadow-lg p-6 transform hover:scale-[1.02] transition-transform">
-              <div className="flex items-start space-x-4">
-                <div className="text-3xl">⭐</div>
-                <div>
-                  <p className="text-gray-600 italic mb-4">{story.quote}</p>
-                  <p className="text-gray-900 font-medium">{story.author}</p>
-                  <p className="text-gray-500 text-sm">{story.type}</p>
-                </div>
-              </div>
-            </div>
+            <Grid item xs={12} md={6} key={index}>
+              <Paper elevation={4} sx={{ p: 4, borderRadius: 3, height: '100%' }}>
+                <Box display="flex" alignItems="flex-start" gap={2}>
+                  <Box fontSize={32}>⭐</Box>
+                  <Box>
+                    <Typography color="text.secondary" fontStyle="italic" mb={1}>
+                      {story.quote}
+                    </Typography>
+                    <Typography fontWeight="medium" color="text.primary">
+                      {story.author}
+                    </Typography>
+                    <Typography color="text.secondary" fontSize={14}>
+                      {story.type}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Paper>
+            </Grid>
           ))}
-        </div>
-      </div>
+        </Grid>
+      </Box>
 
       {/* FAQ Section */}
-      <div className="max-w-4xl mx-auto mb-16 bg-blue-50 rounded-xl p-8">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6 text-center">
-          Frequently Asked Questions
-        </h2>
-        <div className="space-y-6">
-          {faqs.map((faq, index) => (
-            <div key={index} className="bg-white rounded-lg p-6 shadow-md">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                {faq.question}
-              </h3>
-              <p className="text-gray-600">{faq.answer}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+      <Box maxWidth={900} mx="auto" mb={10}>
+        <Paper elevation={2} sx={{ p: { xs: 3, md: 6 }, borderRadius: 3, bgcolor: 'primary.light' }}>
+          <Typography variant="h5" fontWeight="bold" color="primary" textAlign="center" mb={4}>
+            Frequently Asked Questions
+          </Typography>
+          <Stack spacing={3}>
+            {faqs.map((faq, index) => (
+              <Paper key={index} elevation={0} sx={{ p: 3, borderRadius: 2, bgcolor: 'background.paper' }}>
+                <Typography variant="subtitle1" fontWeight="medium" color="text.primary" mb={1}>
+                  {faq.question}
+                </Typography>
+                <Typography color="text.secondary">{faq.answer}</Typography>
+              </Paper>
+            ))}
+          </Stack>
+        </Paper>
+      </Box>
 
       {/* Call to Action */}
-      <div className="max-w-4xl mx-auto text-center">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+      <Box maxWidth={800} mx="auto" textAlign="center">
+        <Typography variant="h5" fontWeight="bold" color="primary" mb={2}>
           Ready to Get Started?
-        </h2>
-        <p className="text-gray-600 mb-8">
+        </Typography>
+        <Typography color="text.secondary" mb={4}>
           Join our community today and start sharing resources with your neighbors
-        </p>
-        <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors transform hover:scale-105">
+        </Typography>
+        <Button variant="contained" color="primary" size="large" sx={{ fontWeight: 'bold', borderRadius: 2 }}>
           Create Account
-        </button>
-      </div>
-    </div>
+        </Button>
+      </Box>
+    </Box>
   );
 };
 

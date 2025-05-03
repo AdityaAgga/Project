@@ -1,117 +1,263 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import {
+  Box,
+  Paper,
+  Typography,
+  TextField,
+  Button,
+  ToggleButton,
+  ToggleButtonGroup,
+  InputAdornment,
+  IconButton,
+  Stack,
+  Container,
+  Grid,
+  useTheme,
+  CircularProgress,
+  Alert,
+} from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useAuth } from '../context/AuthContext';
+//import { useNotification } from '../context/NotificationContext';
+
+// Updated email regex to be more strict
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+// More strict email validation
+const isValidEmail = (email) => {
+  // Check for basic email format
+  if (!emailRegex.test(email)) {
+    return false;
+  }
+  
+  // Additional checks
+  const [localPart, domain] = email.split('@');
+  
+  // Check local part (before @)
+  if (localPart.length < 1 || localPart.length > 64) {
+    return false;
+  }
+  
+  // Check domain part
+  if (domain.length < 1 || domain.length > 255) {
+    return false;
+  }
+  
+  // Check for consecutive dots
+  if (email.includes('..')) {
+    return false;
+  }
+  
+  // Check for valid TLD (top-level domain)
+  const tld = domain.split('.').pop();
+  if (tld.length < 2) {
+    return false;
+  }
+  
+  return true;
+};
+
+const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
 
 const SignIn = () => {
-  // State for form inputs
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [userType, setUserType] = useState("retailer");
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
+  const theme = useTheme();
+  const isDarkMode = theme.palette.mode === 'dark';
 
-  // Handle form submission
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    setError('');
+    setLoading(true);
+
     try {
-      const userData = {
-        email,
-        password,
-        userType
-      };
-
-      const response = await axios.post("http://localhost:5000/api/v1/auth/login", userData);
-
-      const { token, user } = response.data; 
-      
-      // Store token and user type in localStorage
-      localStorage.setItem("authToken", token);
-      localStorage.setItem("userType", user.userType);
-      localStorage.setItem("userName", user.name);
-      
-      alert("Sign In successful!");
-
-      // Redirect based on user type
-      if (user.userType === "retailer") {
-        window.location.href = "/retailer/dashboard";
-      } else {
-        window.location.href = "/wholesaler/dashboard";
-      }
-    } catch (error) {
-      console.error("Error during sign-in:", error.response?.data || error.message);
-      alert(`Error: ${error.response?.data?.message || "Invalid credentials"}`);
+      await login(formData);
+      const userType = localStorage.getItem('userType');
+      navigate(userType === 'wholesaler' ? '/wholesaler/dashboard' : '/retailer/dashboard');
+    } catch (err) {
+      setError(err.message || 'Login failed');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="font-sans bg-gray-100 py-10">
-      <section className="max-w-lg mx-auto p-8 bg-white rounded-lg shadow-md">
-        <h2 className="text-3xl font-bold text-center mb-4">Sign In</h2>
-        <p className="text-center text-gray-600 mb-6">Welcome back to our platform</p>
-        
-        {/* User Type Selector */}
-        <div className="flex mb-6 border rounded-lg overflow-hidden">
-          <button 
-            className={`flex-1 py-3 font-semibold ${userType === 'retailer' ? 'bg-blue-600 text-white' : 'bg-gray-100'}`}
-            onClick={() => setUserType('retailer')}
-            type="button"
-          >
-            Retailer
-          </button>
-          <button 
-            className={`flex-1 py-3 font-semibold ${userType === 'wholesaler' ? 'bg-purple-600 text-white' : 'bg-gray-100'}`}
-            onClick={() => setUserType('wholesaler')}
-            type="button"
-          >
-            Wholesaler
-          </button>
-        </div>
-        
+    <Box sx={{ 
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'relative',
+      overflow: 'hidden',
+      width: '100%',
+      maxWidth: '100%',
+      mx: 'auto',
+      background: isDarkMode
+        ? 'linear-gradient(135deg, rgba(26, 35, 126, 0.1) 0%, rgba(18, 18, 18, 0.05) 50%, rgba(49, 27, 146, 0.1) 100%)'
+        : 'linear-gradient(135deg, rgba(232, 234, 246, 0.6) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(237, 231, 246, 0.6) 100%)',
+    }}>
+      {/* Decorative Circles */}
+      <Box sx={{
+        position: 'absolute',
+        top: -120,
+        left: -120,
+        width: 320,
+        height: 320,
+        background: `linear-gradient(135deg, ${theme.palette.primary.main} 60%, ${theme.palette.primary.light} 100%)`,
+        opacity: isDarkMode ? 0.15 : 0.2,
+        borderRadius: '50%',
+        zIndex: 0,
+      }} />
+      <Box sx={{
+        position: 'absolute',
+        bottom: -100,
+        right: -100,
+        width: 260,
+        height: 260,
+        background: `linear-gradient(135deg, ${theme.palette.primary.light} 60%, ${theme.palette.primary.main} 100%)`,
+        opacity: isDarkMode ? 0.1 : 0.15,
+        borderRadius: '50%',
+        zIndex: 0,
+      }} />
+
+      <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1, py: 4 }}>
+        <Grid container spacing={4} alignItems="center" justifyContent="center">
+          <Grid item xs={12} md={6}>
+            <Box sx={{ textAlign: { xs: 'center', md: 'left' }, mb: { xs: 4, md: 0 } }}>
+              <Typography 
+                variant="h3" 
+                fontWeight={800} 
+                sx={{ 
+                  mb: 2,
+                  background: isDarkMode
+                    ? 'linear-gradient(135deg, #82b1ff 0%, #ffffff 50%, #b388ff 100%)'
+                    : 'linear-gradient(135deg, #1a237e 0%, #000000 50%, #311b92 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                Welcome Back
+              </Typography>
+              <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
+                Sign in to access your account and manage your business
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                Don't have an account?{' '}
+                <Button 
+                  variant="text" 
+                  onClick={() => navigate('/register')}
+                  sx={{ 
+                    color: 'primary.main',
+                    textTransform: 'none',
+                    fontWeight: 600,
+                    p: 0,
+                    '&:hover': {
+                      background: 'transparent',
+                      textDecoration: 'underline'
+                    }
+                  }}
+                >
+                  Register
+                </Button>
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Paper 
+              elevation={3}
+              sx={{ 
+                p: 4,
+                borderRadius: 4,
+                background: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.8)',
+                backdropFilter: 'blur(10px)',
+                border: isDarkMode ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.1)',
+              }}
+            >
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-lg font-semibold">
-              Email Address
-            </label>
-            <input
+                <Stack spacing={3}>
+                  {error && (
+                    <Alert severity="error" sx={{ mb: 2 }}>
+                      {error}
+                    </Alert>
+                  )}
+                  
+                  <TextField
+                    label="Email"
+                    name="email"
               type="email"
-              id="email"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 border rounded-lg mt-2"
-              placeholder="Enter your email"
+                    value={formData.email}
+                    onChange={handleChange}
               required
-            />
-          </div>
-          <div className="mb-6">
-            <label htmlFor="password" className="block text-lg font-semibold">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 border rounded-lg mt-2"
-              placeholder="Enter your password"
+                    fullWidth
+                    variant="outlined"
+                  />
+                  
+                  <TextField
+                    label="Password"
+                    name="password"
+              type={showPassword ? "text" : "password"}
+                    value={formData.password}
+                    onChange={handleChange}
               required
-            />
-          </div>
-          <button
+                    fullWidth
+                    variant="outlined"
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowPassword(!showPassword)}
+                            edge="end"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                  
+                  <Button
             type="submit"
-            className={`w-full ${userType === 'retailer' ? 'bg-blue-600 hover:bg-blue-500' : 'bg-purple-600 hover:bg-purple-500'} text-white py-3 rounded-lg font-semibold`}
-          >
-            Sign In as {userType === 'retailer' ? 'Retailer' : 'Wholesaler'}
-          </button>
+                    variant="contained"
+                    size="large"
+                    disabled={loading}
+                    sx={{ 
+                      py: 2,
+                      borderRadius: 3,
+                      background: theme.palette.primary.main,
+                      '&:hover': {
+                        background: theme.palette.primary.dark,
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 6px 20px rgba(0,0,0,0.15)',
+                      },
+                      transition: 'all 0.2s ease-in-out',
+                    }}
+                  >
+                    {loading ? <CircularProgress size={24} /> : 'Sign In'}
+                  </Button>
+                </Stack>
         </form>
-        <p className="mt-4 text-center">
-          Don't have an account?{" "}
-          <Link to={`/register?type=${userType}`} className="text-blue-600">
-            Register as {userType === 'retailer' ? 'Retailer' : 'Wholesaler'}
-          </Link>
-        </p>
-      </section>
-    </div>
+            </Paper>
+          </Grid>
+        </Grid>
+      </Container>
+    </Box>
   );
 };
 

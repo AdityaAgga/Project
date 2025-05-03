@@ -1,23 +1,56 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Box, Typography, Button, Stack, useTheme } from '@mui/material';
 
 const CallToAction = () => {
+  const theme = useTheme();
   return (
-    <section id="cta" className="text-center py-16 bg-blue-600 text-white">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-6">Ready to Scale Your Business?</h2>
-        <p className="text-xl mb-8">Join our platform today as a retailer or wholesaler and start growing your business.</p>
-        
-        <div className="flex flex-col md:flex-row justify-center gap-4">
-          <Link to="/register?type=retailer" className="bg-white text-blue-600 px-6 py-3 font-bold rounded-lg hover:bg-gray-100">
+    <Box
+      id="cta"
+      sx={{
+        textAlign: 'center',
+        py: { xs: 8, md: 12 },
+        background: 'linear-gradient(135deg, #e0f2fe 0%, #f0fdfa 100%)',
+        color: theme.palette.text.primary,
+        transition: 'background 0.3s',
+      }}
+    >
+      <Box maxWidth={800} mx="auto" px={2}>
+        <Typography
+          variant="h4"
+          fontWeight="bold"
+          gutterBottom
+          sx={{ mb: 3, color: theme.palette.primary.main, textShadow: '0 2px 8px rgba(0,0,0,0.04)' }}
+        >
+          Ready to Scale Your Business?
+        </Typography>
+        <Typography variant="h6" sx={{ mb: 5, color: theme.palette.text.secondary }}>
+          Join our platform today as a retailer or wholesaler and start growing your business.
+        </Typography>
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} justifyContent="center" alignItems="center">
+          <Button
+            component={Link}
+            to="/register?type=retailer"
+            variant="contained"
+            color="primary"
+            size="large"
+            sx={{ fontWeight: 'bold', borderRadius: 2, minWidth: 200 }}
+          >
             Join as Retailer
-          </Link>
-          <Link to="/register?type=wholesaler" className="bg-purple-700 text-white px-6 py-3 font-bold rounded-lg hover:bg-purple-600">
+          </Button>
+          <Button
+            component={Link}
+            to="/register?type=wholesaler"
+            variant="outlined"
+            color="secondary"
+            size="large"
+            sx={{ fontWeight: 'bold', borderRadius: 2, minWidth: 200 }}
+          >
             Join as Wholesaler
-          </Link>
-        </div>
-      </div>
-    </section>
+          </Button>
+        </Stack>
+      </Box>
+    </Box>
   );
 };
 

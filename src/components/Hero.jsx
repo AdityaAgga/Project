@@ -1,32 +1,84 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Box, Typography, Button, Paper, Stack, useTheme } from '@mui/material';
 
 const Hero = () => {
+  const theme = useTheme();
   return (
-    <section id="hero" className="bg-cover bg-center text-center py-24 text-black" style={{ backgroundImage: "url('hero-bg.jpg')" }}>
-      <div className="container mx-auto px-4">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">Connecting Wholesalers and Retailers for Seamless Bulk Transactions</h1>
-        <p className="text-lg mb-6">Discover products in bulk, negotiate prices, and streamline your supply chain.</p>
-        
-        <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-8">
-          <div className="bg-white rounded-lg shadow-md p-6 w-full md:w-64 text-center">
-            <h3 className="text-xl font-bold mb-2">I am a Retailer</h3>
-            <p className="text-gray-600 mb-4">Looking to buy products in bulk from wholesalers</p>
-            <Link to="/register?type=retailer" className="bg-blue-600 px-6 py-2 text-white font-bold rounded-lg hover:bg-blue-500 inline-block">Sign Up as Retailer</Link>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-md p-6 w-full md:w-64 text-center">
-            <h3 className="text-xl font-bold mb-2">I am a Wholesaler</h3>
-            <p className="text-gray-600 mb-4">Looking to sell products in bulk to retailers</p>
-            <Link to="/register?type=wholesaler" className="bg-purple-600 px-6 py-2 text-white font-bold rounded-lg hover:bg-purple-500 inline-block">Sign Up as Wholesaler</Link>
-          </div>
-        </div>
-        
-        <div>
-          <a href="#marketplace" className="bg-gray-800 px-6 py-3 text-white font-bold rounded-lg hover:bg-gray-700">Browse Marketplace</a>
-        </div>
-      </div>
-    </section>
+    <Box
+      id="hero"
+      sx={{
+        background: 'linear-gradient(135deg, #e0e7ff 0%, #f8fafc 60%, #f3e8ff 100%)',
+        textAlign: 'center',
+        py: { xs: 8, md: 12 },
+        transition: 'background 0.3s',
+      }}
+    >
+      <Box sx={{ maxWidth: 1200, mx: 'auto', px: 2 }}>
+        <Typography
+          variant="h3"
+          fontWeight="bold"
+          gutterBottom
+          sx={{ color: theme.palette.primary.main, textShadow: '0 2px 8px rgba(0,0,0,0.04)' }}
+        >
+          Connecting Wholesalers and Retailers for Seamless Bulk Transactions
+        </Typography>
+        <Typography variant="h6" color="text.secondary" mb={4}>
+          Discover products in bulk, negotiate prices, and streamline your supply chain.
+        </Typography>
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing={4} justifyContent="center" alignItems="center" mb={6}>
+          <Paper elevation={4} sx={{ p: 4, width: { xs: '100%', md: 320 }, textAlign: 'center', borderRadius: 4 }}>
+            <Typography variant="h6" fontWeight="bold" color="primary" mb={1}>
+              I am a Retailer
+            </Typography>
+            <Typography color="text.secondary" mb={2}>
+              Looking to buy products in bulk from wholesalers
+            </Typography>
+            <Button
+              component={Link}
+              to="/register?type=retailer"
+              variant="contained"
+              color="primary"
+              size="large"
+              fullWidth
+            >
+              Sign Up as Retailer
+            </Button>
+          </Paper>
+          <Paper elevation={4} sx={{ p: 4, width: { xs: '100%', md: 320 }, textAlign: 'center', borderRadius: 4 }}>
+            <Typography variant="h6" fontWeight="bold" color="secondary" mb={1}>
+              I am a Wholesaler
+            </Typography>
+            <Typography color="text.secondary" mb={2}>
+              Looking to sell products in bulk to retailers
+            </Typography>
+            <Button
+              component={Link}
+              to="/register?type=wholesaler"
+              variant="contained"
+              color="secondary"
+              size="large"
+              fullWidth
+            >
+              Sign Up as Wholesaler
+            </Button>
+          </Paper>
+        </Stack>
+        <Button
+          href="#marketplace"
+          variant="contained"
+          color="primary"
+          size="large"
+          sx={{
+            fontWeight: 'bold',
+            borderRadius: 3,
+            mt: 2,
+          }}
+        >
+          Browse Marketplace
+        </Button>
+      </Box>
+    </Box>
   );
 };
 

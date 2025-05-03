@@ -7,10 +7,11 @@ require("dotenv").config()
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin:"*",
-    methods:["GET","POST","PUT","PATCH","DELETE"],
-    credentials: true
-}))
+    origin: "http://localhost:5173", // Replace with your frontend URL
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 const dbConnect = require("./config/dbConnect")
 
@@ -20,7 +21,25 @@ dbConnect();
 
 const routes = require("./routes/index")
 
-app.use("/api/v1",routes)
+// API routes
+app.use("/api/v1", routes)
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({
+        status: "error",
+        message: "Something went wrong!"
+    });
+});
+
+// Handle 404 routes
+app.use((req, res) => {
+    res.status(404).json({
+        status: "error",
+        message: "Route not found"
+    });
+});
 
 app.listen(PORT,() => {
     console.log(`Server is listening at PORT ${PORT}`)

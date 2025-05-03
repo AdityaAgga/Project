@@ -1,245 +1,472 @@
-import React, { useState, useEffect } from 'react';
-import axios from "axios";
-import { useLocation, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { 
+  Box, 
+  Container, 
+  Typography, 
+  TextField, 
+  Button, 
+  Paper, 
+  Grid, 
+  useTheme,
+  CircularProgress,
+  Alert,
+  Stack,
+  InputAdornment,
+  IconButton,
+  ToggleButtonGroup,
+  ToggleButton,
+  Divider
+} from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useAuth } from '../context/AuthContext';
+
+// Validation functions
+const isValidEmail = (email) => {
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailRegex.test(email);
+};
+
+const isValidPhone = (phone) => {
+  const phoneRegex = /^[6-9]\d{9}$/;
+  return phoneRegex.test(phone);
+};
+
+const isValidPassword = (password) => {
+const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+  return passwordRegex.test(password);
+};
+
+const isValidGSTIN = (gstin) => {
+  const gstinRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+  return gstinRegex.test(gstin);
+};
 
 const Register = () => {
-  const location = useLocation();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    phone: '',
+    businessName: '',
+    address: '',
+    businessType: '',
+    gstin: ''
+  });
   const [userType, setUserType] = useState('retailer');
-  
-  // State for form inputs
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [businessName, setBusinessName] = useState('');
-  const [address, setAddress] = useState('');
-  const [phone, setPhone] = useState('');
-  const [businessType, setBusinessType] = useState('');
-  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { register } = useAuth();
+  const theme = useTheme();
+  const isDarkMode = theme.palette.mode === 'dark';
 
-  // Get user type from URL parameters
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const type = params.get('type');
-    if (type === 'wholesaler' || type === 'retailer') {
-      setUserType(type);
-    }
-  }, [location.search]);
-
-  // Toggle between user types
-  const toggleUserType = (type) => {
-    setUserType(type);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Validate the field
+    const error = validateField(name, value);
+    setErrors(prev => ({
+      ...prev,
+      [name]: error
+    }));
   };
 
-  // Handle form submission
+  const handleUserTypeChange = (event, newUserType) => {
+    if (newUserType !== null) {
+      setUserType(newUserType);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (password !== confirmPassword) {
-      alert("Passwords do not match");
-      return;
-    }
+    // Validate all fields
+    const newErrors = {};
+    Object.keys(formData).forEach(key => {
+      const error = validateField(key, formData[key]);
+      if (error) newErrors[key] = error;
+    });
 
-    if (!termsAccepted) {
-      alert("Please accept terms and conditions");
-      return;
+    // Additional validation for businessType
+    if (userType === 'wholesaler' && !formData.businessType) {
+      newErrors.businessType = 'Business type is required for wholesalers';
     }
+    
+    // setErrors(newErrors);
+    
+    // if (Object.keys(newErrors).length > 0) {
+    //   setError('Please fix the errors in the form');
+    //   return;
+    // }
+
+    setError('');
+    setLoading(true);
 
     try {
-      const userData = {
-        name,
-        email,
-        password,
-        businessName,
-        address,
-        phone
-      };
-      
-      // Add business type for wholesalers
-      if (userType === 'wholesaler') {
-        userData.businessType = businessType;
-      }
-
-      // Use different endpoints based on user type
-      const endpoint = userType === 'retailer' 
-        ? "http://localhost:5000/api/v1/auth/register-retailer"
-        : "http://localhost:5000/api/v1/auth/register-wholesaler";
-
-      const response = await axios.post(endpoint, userData);
-
-      alert("Registration Successful");
-      window.location.href = "/sign-in";
-    } catch (error) {
-      console.error("Error during registration:", error.response?.data || error.message);
-      alert(`Error: ${error.response?.data?.message || "Something went wrong"}`);
+      await register({ ...formData }, userType);
+      localStorage.setItem('tempPassword', formData.password);
+      // After successful registration, redirect to OTP verification
+      navigate(`/verify-otp?email=${encodeURIComponent(formData.email)}&type=${userType}`);
+    } catch (err) {
+      setError(err.message || 'Registration failed');
+    } finally {
+      setLoading(false);
     }
   };
 
+  const validateField = (name, value) => {
+    switch (name) {
+      case 'email':
+        return isValidEmail(value) ? '' : 'Please enter a valid email address';
+      case 'phone':
+        return isValidPhone(value) ? '' : 'Please enter a valid 10-digit mobile number';
+      case 'password':
+        return isValidPassword(value) ? '' : 'Password must be at least 8 characters, include 1 uppercase letter, 1 number, and 1 special character';
+      case 'confirmPassword':
+        return value === formData.password ? '' : 'Passwords do not match';
+      case 'gstin':
+        return isValidGSTIN(value) ? '' : 'Please enter a valid GSTIN';
+      case 'businessType':
+        return userType === 'wholesaler' && !value ? 'Business type is required for wholesalers' : '';
+      default:
+        return value ? '' : 'This field is required';
+    }
+  };
+
+  const getThemeColor = () => {
+    return userType === 'wholesaler' 
+      ? isDarkMode 
+        ? 'linear-gradient(135deg, #006064 0%, #00838f 50%, #0097a7 100%)'
+        : 'linear-gradient(135deg, #00acc1 0%, #26c6da 50%, #4dd0e1 100%)'
+      : isDarkMode
+        ? 'linear-gradient(135deg, #00838f 0%, #0097a7 50%, #00acc1 100%)'
+        : 'linear-gradient(135deg, #26c6da 0%, #4dd0e1 50%, #80deea 100%)';
+  };
+
   return (
-    <div className="font-sans bg-gray-100 py-10">
-      <section className="max-w-lg mx-auto p-8 bg-white rounded-lg shadow-md">
-        <h2 className="text-3xl font-bold text-center mb-4">Create Your Account</h2>
-        <p className="text-center text-gray-600 mb-6">Join our platform and start growing your business</p>
-        
-        {/* User Type Selector */}
-        <div className="flex mb-6 border rounded-lg overflow-hidden">
-          <button 
-            className={`flex-1 py-3 font-semibold ${userType === 'retailer' ? 'bg-blue-600 text-white' : 'bg-gray-100'}`}
-            onClick={() => toggleUserType('retailer')}
+    <Box sx={{ 
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'relative',
+      overflow: 'hidden',
+      width: '100%',
+      maxWidth: '100%',
+      mx: 'auto',
+      background: isDarkMode
+        ? 'linear-gradient(135deg, rgba(26, 35, 126, 0.1) 0%, rgba(18, 18, 18, 0.05) 50%, rgba(49, 27, 146, 0.1) 100%)'
+        : 'linear-gradient(135deg, rgba(232, 234, 246, 0.6) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(237, 231, 246, 0.6) 100%)',
+    }}>
+      {/* Decorative Circles */}
+      <Box sx={{
+        position: 'absolute',
+        top: -120,
+        left: -120,
+        width: 320,
+        height: 320,
+        background: getThemeColor(),
+        opacity: isDarkMode ? 0.15 : 0.2,
+        borderRadius: '50%',
+        zIndex: 0,
+      }} />
+      <Box sx={{
+        position: 'absolute',
+        bottom: -100,
+        right: -100,
+        width: 260,
+        height: 260,
+        background: getThemeColor(),
+        opacity: isDarkMode ? 0.1 : 0.15,
+        borderRadius: '50%',
+        zIndex: 0,
+      }} />
+
+      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1, py: 4 }}>
+        <Grid container spacing={4} alignItems="center" justifyContent="center">
+          <Grid item xs={12} md={5}>
+            <Box sx={{ textAlign: { xs: 'center', md: 'left' }, mb: { xs: 4, md: 0 } }}>
+              <Typography 
+                variant="h3" 
+                fontWeight={800} 
+                sx={{ 
+                  mb: 2,
+                  background: getThemeColor(),
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                Join CRES Today
+              </Typography>
+              <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
+                {userType === 'wholesaler' 
+                  ? 'Expand your business reach and connect with retailers nationwide'
+                  : 'Access quality products from verified wholesalers and grow your retail business'}
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                Already have an account?{' '}
+                <Button 
+                  variant="text" 
+                  onClick={() => navigate('/sign-in')}
+                  sx={{ 
+                    color: 'info.main',
+                    textTransform: 'none',
+                    fontWeight: 600,
+                    p: 0,
+                    '&:hover': {
+                      background: 'transparent',
+                      textDecoration: 'underline'
+                    }
+                  }}
+                >
+                  Sign In
+                </Button>
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={7}>
+            <Paper 
+              elevation={3}
+              sx={{ 
+                p: 4,
+                borderRadius: 4,
+                background: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.8)',
+                backdropFilter: 'blur(10px)',
+                border: isDarkMode ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.1)',
+              }}
+            >
+              <form onSubmit={handleSubmit}>
+                <Stack spacing={3}>
+                  {error && (
+                    <Alert severity="error" sx={{ mb: 2 }}>
+                      {error}
+                    </Alert>
+                  )}
+
+                  <ToggleButtonGroup
+                    value={userType}
+                    exclusive
+                    onChange={handleUserTypeChange}
+                    fullWidth
+                    sx={{ mb: 2 }}
+                  >
+                    <ToggleButton 
+                      value="retailer" 
+                      sx={{ 
+                        flex: 1,
+                        '&.Mui-selected': {
+                          bgcolor: 'info.main',
+                          color: 'white',
+                          '&:hover': {
+                            bgcolor: 'info.dark'
+                          }
+                        }
+                      }}
           >
             Retailer
-          </button>
-          <button 
-            className={`flex-1 py-3 font-semibold ${userType === 'wholesaler' ? 'bg-purple-600 text-white' : 'bg-gray-100'}`}
-            onClick={() => toggleUserType('wholesaler')}
+                    </ToggleButton>
+                    <ToggleButton 
+                      value="wholesaler" 
+                      sx={{ 
+                        flex: 1,
+                        '&.Mui-selected': {
+                          bgcolor: 'info.main',
+                          color: 'white',
+                          '&:hover': {
+                            bgcolor: 'info.dark'
+                          }
+                        }
+                      }}
           >
             Wholesaler
-          </button>
-        </div>
-        
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="name" className="block text-lg font-semibold">Full Name</label>
-            <input
-              type="text"
-              id="name"
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+                  
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        label="Full Name"
               name="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full p-3 border rounded-lg mt-2"
-              placeholder="Enter your full name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        error={!!errors.name}
+                        helperText={errors.name}
               required
-            />
-          </div>
-          
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-lg font-semibold">Email Address</label>
-            <input
+                        fullWidth
+                        variant="outlined"
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        label="Email"
+                        name="email"
               type="email"
-              id="email"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 border rounded-lg mt-2"
-              placeholder="Enter your email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        error={!!errors.email}
+                        helperText={errors.email}
+                        required
+                        fullWidth
+                        variant="outlined"
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        label="Phone"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        error={!!errors.phone}
+                        helperText={errors.phone}
               required
-            />
-          </div>
-          
-          <div className="mb-4">
-            <label htmlFor="businessName" className="block text-lg font-semibold">
-              {userType === 'retailer' ? 'Store Name' : 'Business Name'}
-            </label>
-            <input
-              type="text"
-              id="businessName"
+                        fullWidth
+                        variant="outlined"
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        label="Business Name"
               name="businessName"
-              value={businessName}
-              onChange={(e) => setBusinessName(e.target.value)}
-              className="w-full p-3 border rounded-lg mt-2"
-              placeholder={userType === 'retailer' ? 'Enter your store name' : 'Enter your business name'}
+                        value={formData.businessName}
+                        onChange={handleChange}
+                        error={!!errors.businessName}
+                        helperText={errors.businessName}
+                        required
+                        fullWidth
+                        variant="outlined"
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        label="Address"
+                        name="address"
+                        value={formData.address}
+                        onChange={handleChange}
+                        error={!!errors.address}
+                        helperText={errors.address}
+                        required
+                        fullWidth
+                        variant="outlined"
+                        multiline
+                        rows={2}
+                      />
+                    </Grid>
+                    {userType === 'wholesaler' && (
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          label="Business Type"
+                          name="businessType"
+                          value={formData.businessType}
+                          onChange={handleChange}
+                          error={!!errors.businessType}
+                          helperText={errors.businessType}
+                          required
+                          fullWidth
+                          variant="outlined"
+                        />
+                      </Grid>
+                    )}
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        label="GSTIN"
+                        name="gstin"
+                        value={formData.gstin}
+                        onChange={handleChange}
+                        error={!!errors.gstin}
+                        helperText={errors.gstin}
+                        required
+                        fullWidth
+                        variant="outlined"
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        label="Password"
+                        name="password"
+              type={showPassword ? "text" : "password"}
+                        value={formData.password}
+                        onChange={handleChange}
+                        error={!!errors.password}
+                        helperText={errors.password}
               required
-            />
-          </div>
-          
-          <div className="mb-4">
-            <label htmlFor="address" className="block text-lg font-semibold">Business Address</label>
-            <input
-              type="text"
-              id="address"
-              name="address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="w-full p-3 border rounded-lg mt-2"
-              placeholder="Enter your business address"
+                        fullWidth
+                        variant="outlined"
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                onClick={() => setShowPassword(!showPassword)}
+                                edge="end"
+                              >
+                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        label="Confirm Password"
+                        name="confirmPassword"
+              type={showConfirmPassword ? "text" : "password"}
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        error={!!errors.confirmPassword}
+                        helperText={errors.confirmPassword}
               required
-            />
-          </div>
-          
-          <div className="mb-4">
-            <label htmlFor="phone" className="block text-lg font-semibold">Phone Number</label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="w-full p-3 border rounded-lg mt-2"
-              placeholder="Enter your phone number"
-              required
-            />
-          </div>
-          
-          {userType === 'wholesaler' && (
-            <div className="mb-4">
-              <label htmlFor="businessType" className="block text-lg font-semibold">Business Type</label>
-              <input
-                type="text"
-                id="businessType"
-                name="businessType"
-                value={businessType}
-                onChange={(e) => setBusinessType(e.target.value)}
-                className="w-full p-3 border rounded-lg mt-2"
-                placeholder="e.g., Manufacturer, Distributor, etc."
-                required
-              />
-            </div>
-          )}
-          
-          <div className="mb-4">
-            <label htmlFor="password" className="block text-lg font-semibold">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 border rounded-lg mt-2"
-              placeholder="Create a password"
-              required
-            />
-          </div>
-          
-          <div className="mb-4">
-            <label htmlFor="confirm-password" className="block text-lg font-semibold">Confirm Password</label>
-            <input
-              type="password"
-              id="confirm-password"
-              name="confirm-password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full p-3 border rounded-lg mt-2"
-              placeholder="Confirm your password"
-              required
-            />
-          </div>
-          
-          <div className="mb-6 flex items-center">
-            <input
-              type="checkbox"
-              id="terms"
-              checked={termsAccepted}
-              onChange={() => setTermsAccepted(!termsAccepted)}
-              className="mr-2"
-            />
-            <label htmlFor="terms" className="text-sm">
-              I agree to the <a href="#terms" className="text-blue-600">terms and conditions</a>
-            </label>
-          </div>
-          
-          <button 
+                        fullWidth
+                        variant="outlined"
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                edge="end"
+                              >
+                                {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                  
+                  <Button
             type="submit" 
-            className={`w-full ${userType === 'retailer' ? 'bg-blue-600 hover:bg-blue-500' : 'bg-purple-600 hover:bg-purple-500'} text-white py-3 rounded-lg font-semibold`}
-          >
-            Register as {userType === 'retailer' ? 'Retailer' : 'Wholesaler'}
-          </button>
+                    variant="contained"
+                    size="large"
+                    disabled={loading}
+                    sx={{ 
+                      py: 2,
+                      borderRadius: 3,
+                      background: getThemeColor(),
+                      '&:hover': {
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 6px 20px rgba(0,0,0,0.15)',
+                      },
+                      transition: 'all 0.2s ease-in-out',
+                    }}
+                  >
+                    {loading ? <CircularProgress size={24} /> : 'Create Account'}
+                  </Button>
+                </Stack>
         </form>
-        
-        <p className="mt-4 text-center">
-          Already have an account? <Link to="/sign-in" className="text-blue-600">Sign In</Link>
-        </p>
-      </section>
-    </div>
+            </Paper>
+          </Grid>
+        </Grid>
+      </Container>
+    </Box>
   );
 };
 
